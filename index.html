@@ -7,92 +7,58 @@
 <link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a2b26;
-    --muted: #64756f;
-    --line: #dde5e1;
-    --accent: #0f6e56;
-    --accent-soft: #e1f5ee;
-    --bg: #f5f7f6;
-    --danger: #a32d2d;
-    --danger-soft: #fcebeb;
-    --warn-soft: #faeeda;
-    --warn-ink: #633806;
+    --ink: #1a2b26; --muted: #64756f; --line: #dde5e1;
+    --accent: #0f6e56; --accent-soft: #e1f5ee;
+    --bg: #f5f7f6; --danger: #a32d2d; --danger-soft: #fcebeb;
+    --warn-soft: #faeeda; --warn-ink: #633806;
   }
   * { box-sizing: border-box; margin: 0; }
-  body {
-    font-family: 'Anuphan', sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    font-size: 16px;
-    line-height: 1.6;
-  }
+  body { font-family: 'Anuphan', sans-serif; background: var(--bg); color: var(--ink); font-size: 16px; line-height: 1.6; }
   .wrap { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
   header { margin-bottom: 20px; }
   header h1 { font-size: 22px; font-weight: 600; }
   header p { font-size: 14px; color: var(--muted); }
-  .hello {
-    display: none; align-items: center; gap: 10px;
-    background: var(--accent-soft); border-radius: 10px;
-    padding: 10px 14px; margin-bottom: 20px; font-size: 14px;
-    color: #085041;
-  }
+  .hello { display: none; align-items: center; gap: 10px; background: var(--accent-soft); border-radius: 10px; padding: 10px 14px; margin-bottom: 20px; font-size: 14px; color: #085041; }
   .hello img { width: 32px; height: 32px; border-radius: 50%; }
-  .notice {
-    display: none; border-radius: 10px;
-    padding: 10px 14px; margin-bottom: 20px; font-size: 14px;
-  }
+  .notice { display: none; border-radius: 10px; padding: 10px 14px; margin-bottom: 20px; font-size: 14px; }
   .notice.warn { background: var(--warn-soft); color: var(--warn-ink); }
   .notice.err { background: var(--danger-soft); color: var(--danger); word-break: break-word; }
-  .login-btn {
-    display: none; width: 100%; margin-bottom: 20px;
-    background: #06C755; color: #fff; border: none; border-radius: 12px;
-    padding: 13px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
-  }
-  .card {
-    background: #fff; border: 1px solid var(--line);
-    border-radius: 14px; padding: 20px 18px;
-  }
+  .login-btn { display: none; width: 100%; margin-bottom: 20px; background: #06C755; color: #fff; border: none; border-radius: 12px; padding: 13px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 20px 18px; }
   label { display: block; font-size: 14px; font-weight: 500; margin: 16px 0 6px; }
-  label:first-child { margin-top: 0; }
   label .opt { color: var(--muted); font-weight: 400; }
-  input, textarea {
-    width: 100%; font: inherit; color: inherit;
-    border: 1px solid var(--line); border-radius: 10px;
-    padding: 11px 12px; background: #fff;
-  }
-  input:focus, textarea:focus {
-    outline: none; border-color: var(--accent);
-    box-shadow: 0 0 0 3px var(--accent-soft);
-  }
+  input, textarea { width: 100%; font: inherit; color: inherit; border: 1px solid var(--line); border-radius: 10px; padding: 11px 12px; background: #fff; }
+  input:focus, textarea:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
   textarea { resize: vertical; min-height: 72px; }
-  .row { display: flex; gap: 10px; }
-  .row > div { flex: 1; }
   .hint { font-size: 13px; color: var(--muted); margin-top: 4px; }
   #manual-name-wrap { display: none; }
-  button.submit {
-    width: 100%; margin-top: 24px;
-    background: var(--accent); color: #fff;
-    border: none; border-radius: 12px;
-    padding: 14px; font: inherit; font-size: 17px; font-weight: 600;
-    cursor: pointer;
-  }
+
+  .item-row { display: flex; gap: 6px; margin-bottom: 8px; align-items: flex-start; }
+  .item-row .name { flex: 1; }
+  .item-row .qty { width: 64px; padding: 11px 8px; text-align: right; }
+  .item-row .unit { width: 72px; padding: 11px 8px; }
+  .item-row .del { background: none; border: none; color: var(--muted); font-size: 20px; padding: 10px 4px 0; cursor: pointer; line-height: 1; }
+  .add-row { background: none; border: 1px dashed var(--line); border-radius: 10px; width: 100%; padding: 10px; font: inherit; font-size: 14px; color: var(--accent); cursor: pointer; margin-top: 2px; }
+
+  details { margin-top: 10px; border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+  details summary { font-size: 14px; color: var(--accent); cursor: pointer; font-weight: 500; }
+  details textarea { margin-top: 10px; min-height: 110px; font-size: 14px; }
+  .parse-btn { margin-top: 8px; background: var(--accent-soft); color: #085041; border: none; border-radius: 8px; padding: 9px 14px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer; }
+
+  .photo-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; background: none; border: 1px dashed var(--line); border-radius: 10px; padding: 12px; font: inherit; font-size: 14px; color: var(--muted); cursor: pointer; }
+  #photo-preview { display: none; position: relative; margin-top: 10px; }
+  #photo-preview img { width: 100%; border-radius: 10px; border: 1px solid var(--line); }
+  #photo-remove { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.6); color: #fff; border: none; border-radius: 8px; padding: 4px 10px; font: inherit; font-size: 13px; cursor: pointer; }
+
+  button.submit { width: 100%; margin-top: 24px; background: var(--accent); color: #fff; border: none; border-radius: 12px; padding: 14px; font: inherit; font-size: 17px; font-weight: 600; cursor: pointer; }
   button.submit:active { transform: scale(0.99); }
   button.submit:disabled { opacity: 0.55; }
   .error { color: var(--danger); font-size: 14px; margin-top: 12px; display: none; }
   .done { text-align: center; padding: 48px 16px; display: none; }
-  .done .check {
-    width: 64px; height: 64px; border-radius: 50%;
-    background: var(--accent-soft); color: var(--accent);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 32px; margin: 0 auto 16px;
-  }
+  .done .check { width: 64px; height: 64px; border-radius: 50%; background: var(--accent-soft); color: var(--accent); display: flex; align-items: center; justify-content: center; font-size: 32px; margin: 0 auto 16px; }
   .done h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
   .done p { color: var(--muted); font-size: 15px; }
-  .done .req-id {
-    display: inline-block; margin-top: 14px;
-    background: #fff; border: 1px solid var(--line); border-radius: 8px;
-    padding: 6px 14px; font-weight: 600; letter-spacing: 0.03em;
-  }
+  .done .req-id { display: inline-block; margin-top: 14px; background: #fff; border: 1px solid var(--line); border-radius: 8px; padding: 6px 14px; font-weight: 600; letter-spacing: 0.03em; }
 </style>
 </head>
 <body>
@@ -101,7 +67,7 @@
   <div id="form-view">
     <header>
       <h1>ขอซื้อของ</h1>
-      <p>กรอกสั้น ๆ จัดซื้อรับเรื่องต่อให้ทันที และจะแจ้งสถานะกลับทางไลน์</p>
+      <p>กรอกกี่รายการก็ได้ จัดซื้อรับเรื่องต่อให้ทันที และจะแจ้งสถานะกลับทางไลน์</p>
     </header>
 
     <div class="hello" id="hello">
@@ -110,7 +76,6 @@
     </div>
 
     <button class="login-btn" id="login-btn" onclick="doLogin()">เข้าสู่ระบบด้วย LINE เพื่อรับแจ้งเตือน</button>
-
     <div class="notice warn" id="warn-box"></div>
     <div class="notice err" id="err-box"></div>
 
@@ -121,19 +86,23 @@
         <p class="hint">กรอกชื่อเองเพราะยังไม่ได้เข้าสู่ระบบ LINE — คำขอนี้จะไม่ได้รับแจ้งเตือนอัตโนมัติ</p>
       </div>
 
-      <label for="item">อยากได้อะไร</label>
-      <textarea id="item" placeholder="เช่น ส้มสายน้ำผึ้ง / มือจับประตู HAFELE 489.11.046 สีเทา"></textarea>
-      <p class="hint">ใส่รุ่น สี ขนาด ให้ละเอียดพอที่จัดซื้อสั่งได้ถูกตัว</p>
+      <label>รายการที่ต้องการ</label>
+      <div id="items"></div>
+      <button type="button" class="add-row" onclick="addRow()">+ เพิ่มบรรทัด</button>
 
-      <div class="row">
-        <div>
-          <label for="qty">จำนวน</label>
-          <input id="qty" type="number" inputmode="decimal" min="0.01" step="any" placeholder="2">
-        </div>
-        <div>
-          <label for="unit">หน่วย</label>
-          <input id="unit" placeholder="ลูก / ชุด / กล่อง">
-        </div>
+      <details>
+        <summary>มีรายการพิมพ์ไว้แล้ว? วางทั้งชุดตรงนี้</summary>
+        <textarea id="paste-box" placeholder="วางบรรทัดละ 1 รายการ เช่น&#10;ปูนก่อเสือซุปเปอร์ 50 ถุง&#10;เหล็ก RB6 20 เส้น&#10;เหล็ก RB9 30 เส้น"></textarea>
+        <button type="button" class="parse-btn" onclick="parsePaste()">แปลงเป็นรายการ</button>
+        <p class="hint">ระบบจะเดาจำนวนกับหน่วยจากท้ายบรรทัดให้ ตรวจอีกทีก่อนส่ง</p>
+      </details>
+
+      <label style="margin-top:20px;">รูปรายการ / โพย / BOQ <span class="opt">(ถ้ามี)</span></label>
+      <input type="file" id="photo-input" accept="image/*" style="display:none;" onchange="photoPicked(this)">
+      <button type="button" class="photo-btn" onclick="document.getElementById('photo-input').click()">&#128247; ถ่ายรูปหรือแนบรูปรายการ</button>
+      <div id="photo-preview">
+        <img id="photo-img" alt="รูปที่แนบ">
+        <button type="button" id="photo-remove" onclick="removePhoto()">ลบรูป</button>
       </div>
 
       <label for="needBy">ต้องการใช้ภายใน <span class="opt">(ถ้ามี)</span></label>
@@ -163,20 +132,98 @@
 <script>
   // ============ ตั้งค่า 2 บรรทัดนี้ ============
   var LIFF_ID = '2010661050-IAMDZu3r';
-  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhjRInxxS9LMyV75-r1kvakF1o7Bw2LfYn0aEqjMZwiNFXXf2iDq1acRkPKOIKDuug/exec'; // วาง Web app URL (ลงท้าย /exec) ของคุณแทนข้อความนี้ทั้งก้อน โดยคงเครื่องหมาย ' ' หัวท้ายไว้
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhjRInxxS9LMyV75-r1kvakF1o7Bw2LfYn0aEqjMZwiNFXXf2iDq1acRkPKOIKDuug/exec
+';
   // ==========================================
 
   var profile = { userId: '', displayName: '' };
   var liffReady = false;
+  var photoData = null; // { base64, type }
 
   function show(id, on) { document.getElementById(id).style.display = on ? (id === 'hello' ? 'flex' : 'block') : 'none'; }
   function setText(id, t) { document.getElementById(id).textContent = t; }
 
+  /* ---------- รายการหลายบรรทัด ---------- */
+  function addRow(name, qty, unit) {
+    var div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML =
+      '<textarea class="name" rows="1" placeholder="เช่น ปูนก่อเสือซุปเปอร์"></textarea>' +
+      '<input class="qty" type="number" inputmode="decimal" min="0.01" step="any" placeholder="50">' +
+      '<input class="unit" placeholder="ถุง">' +
+      '<button type="button" class="del" onclick="this.parentNode.remove()" aria-label="ลบบรรทัดนี้">&times;</button>';
+    document.getElementById('items').appendChild(div);
+    if (name) div.querySelector('.name').value = name;
+    if (qty) div.querySelector('.qty').value = qty;
+    if (unit) div.querySelector('.unit').value = unit;
+  }
+  addRow();
+
+  function getItems() {
+    var rows = document.querySelectorAll('#items .item-row');
+    var items = [];
+    rows.forEach(function (r) {
+      var name = r.querySelector('.name').value.trim();
+      var qty = r.querySelector('.qty').value;
+      var unit = r.querySelector('.unit').value.trim();
+      if (name) items.push({ name: name, qty: qty ? Number(qty) : '', unit: unit });
+    });
+    return items;
+  }
+
+  /* ---------- วางทั้งชุดแล้วแตกบรรทัด ---------- */
+  function parsePaste() {
+    var text = document.getElementById('paste-box').value;
+    var lines = text.split(/\n+/).map(function (l) { return l.trim(); }).filter(Boolean);
+    if (!lines.length) return;
+
+    // ล้างแถวว่างเดิมออกก่อน
+    document.querySelectorAll('#items .item-row').forEach(function (r) {
+      if (!r.querySelector('.name').value.trim()) r.remove();
+    });
+
+    lines.forEach(function (line) {
+      // จับรูปแบบ "ชื่อของ ... จำนวน หน่วย" ท้ายบรรทัด เช่น "ปูนก่อเสือ 50 ถุง"
+      var m = line.match(/^(.*?)[\s.\u00b7-]*([0-9]+(?:[.,][0-9]+)?)\s*([^\s0-9]{1,10})?\s*$/);
+      if (m && m[1].trim()) {
+        addRow(m[1].trim(), m[2].replace(',', '.'), m[3] || '');
+      } else {
+        addRow(line, '', '');
+      }
+    });
+    document.getElementById('paste-box').value = '';
+  }
+
+  /* ---------- รูปแนบ (ย่อรูปก่อนส่งให้ไฟล์เล็ก) ---------- */
+  function photoPicked(input) {
+    var file = input.files && input.files[0];
+    if (!file) return;
+    var img = new Image();
+    var reader = new FileReader();
+    reader.onload = function (e) { img.src = e.target.result; };
+    img.onload = function () {
+      var MAX = 1280;
+      var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      photoData = { base64: dataUrl.split(',')[1], type: 'image/jpeg' };
+      document.getElementById('photo-img').src = dataUrl;
+      show('photo-preview', true);
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+  function removePhoto() {
+    photoData = null;
+    show('photo-preview', false);
+  }
+
+  /* ---------- LIFF ---------- */
   (function init() {
-    if (typeof liff === 'undefined') {
-      showManualMode('โหลดตัวเชื่อม LINE ไม่สำเร็จ (อินเทอร์เน็ตอาจถูกบล็อก)');
-      return;
-    }
+    if (typeof liff === 'undefined') { showManualMode('โหลดตัวเชื่อม LINE ไม่สำเร็จ'); return; }
     liff.init({ liffId: LIFF_ID })
       .then(function () {
         liffReady = true;
@@ -189,40 +236,30 @@
             show('hello', true);
           });
         } else {
-          // เปิดจากเบราว์เซอร์ (คอม) — โชว์ปุ่ม login แต่ยังกรอกต่อได้ถ้าไม่อยาก login
           show('login-btn', true);
-          showManualFields();
+          document.getElementById('manual-name-wrap').style.display = 'block';
         }
       })
-      .catch(function (e) {
-        showManualMode('เชื่อม LINE ไม่สำเร็จ: ' + (e && e.message ? e.message : e));
-      });
+      .catch(function (e) { showManualMode('เชื่อม LINE ไม่สำเร็จ: ' + (e && e.message ? e.message : e)); });
   })();
 
-  function doLogin() {
-    if (liffReady) liff.login({ redirectUri: window.location.href });
-  }
-
-  function showManualFields() {
-    document.getElementById('manual-name-wrap').style.display = 'block';
-  }
+  function doLogin() { if (liffReady) liff.login({ redirectUri: window.location.href }); }
 
   function showManualMode(reason) {
     var w = document.getElementById('warn-box');
     w.textContent = 'โหมดกรอกชื่อเอง — ' + reason;
     show('warn-box', true);
-    showManualFields();
+    document.getElementById('manual-name-wrap').style.display = 'block';
   }
 
+  /* ---------- ส่งคำขอ ---------- */
   function submitForm() {
-    var item = document.getElementById('item').value.trim();
-    var qty = document.getElementById('qty').value;
+    var items = getItems();
     var manualName = document.getElementById('manual-name').value.trim();
     var err = document.getElementById('err');
     err.style.display = 'none';
 
-    if (!item) { return showErr('บอกหน่อยว่าอยากได้อะไร'); }
-    if (!qty || Number(qty) <= 0) { return showErr('ใส่จำนวนมากกว่า 0'); }
+    if (!items.length && !photoData) { return showErr('ใส่อย่างน้อย 1 รายการ หรือแนบรูปรายการมาก็ได้'); }
     if (!profile.userId && !manualName) { return showErr('กรอกชื่อผู้ขอ หรือกดเข้าสู่ระบบด้วย LINE ก่อนนะ'); }
     if (SCRIPT_URL.indexOf('http') !== 0) { return showErr('ยังไม่ได้ตั้งค่า SCRIPT_URL ในไฟล์ฟอร์ม'); }
 
@@ -235,12 +272,12 @@
       body: JSON.stringify({
         userId: profile.userId,
         displayName: profile.displayName || manualName,
-        item: item,
-        qty: qty,
-        unit: document.getElementById('unit').value,
+        items: items,
         needBy: document.getElementById('needBy').value,
         project: document.getElementById('project').value,
-        note: document.getElementById('note').value
+        note: document.getElementById('note').value,
+        imageBase64: photoData ? photoData.base64 : '',
+        imageType: photoData ? photoData.type : ''
       })
     })
       .then(function (r) { return r.json(); })
