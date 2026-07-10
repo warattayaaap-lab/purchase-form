@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ขอซื้อของ</title>
+<link href="https://fonts.googleapis.com/css2?family=Anuphan:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a2b26;
+    --muted: #64756f;
+    --line: #dde5e1;
+    --accent: #0f6e56;
+    --accent-soft: #e1f5ee;
+    --bg: #f5f7f6;
+    --danger: #a32d2d;
+    --danger-soft: #fcebeb;
+    --warn-soft: #faeeda;
+    --warn-ink: #633806;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  body {
+    font-family: 'Anuphan', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 20px 16px 40px; }
+  header { margin-bottom: 20px; }
+  header h1 { font-size: 22px; font-weight: 600; }
+  header p { font-size: 14px; color: var(--muted); }
+  .hello {
+    display: none; align-items: center; gap: 10px;
+    background: var(--accent-soft); border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 20px; font-size: 14px;
+    color: #085041;
+  }
+  .hello img { width: 32px; height: 32px; border-radius: 50%; }
+  .notice {
+    display: none; border-radius: 10px;
+    padding: 10px 14px; margin-bottom: 20px; font-size: 14px;
+  }
+  .notice.warn { background: var(--warn-soft); color: var(--warn-ink); }
+  .notice.err { background: var(--danger-soft); color: var(--danger); word-break: break-word; }
+  .login-btn {
+    display: none; width: 100%; margin-bottom: 20px;
+    background: #06C755; color: #fff; border: none; border-radius: 12px;
+    padding: 13px; font: inherit; font-size: 16px; font-weight: 600; cursor: pointer;
+  }
+  .card {
+    background: #fff; border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px 18px;
+  }
+  label { display: block; font-size: 14px; font-weight: 500; margin: 16px 0 6px; }
+  label:first-child { margin-top: 0; }
+  label .opt { color: var(--muted); font-weight: 400; }
+  input, textarea {
+    width: 100%; font: inherit; color: inherit;
+    border: 1px solid var(--line); border-radius: 10px;
+    padding: 11px 12px; background: #fff;
+  }
+  input:focus, textarea:focus {
+    outline: none; border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+  textarea { resize: vertical; min-height: 72px; }
+  .row { display: flex; gap: 10px; }
+  .row > div { flex: 1; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 4px; }
+  #manual-name-wrap { display: none; }
+  button.submit {
+    width: 100%; margin-top: 24px;
+    background: var(--accent); color: #fff;
+    border: none; border-radius: 12px;
+    padding: 14px; font: inherit; font-size: 17px; font-weight: 600;
+    cursor: pointer;
+  }
+  button.submit:active { transform: scale(0.99); }
+  button.submit:disabled { opacity: 0.55; }
+  .error { color: var(--danger); font-size: 14px; margin-top: 12px; display: none; }
+  .done { text-align: center; padding: 48px 16px; display: none; }
+  .done .check {
+    width: 64px; height: 64px; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 32px; margin: 0 auto 16px;
+  }
+  .done h2 { font-size: 20px; font-weight: 600; margin-bottom: 6px; }
+  .done p { color: var(--muted); font-size: 15px; }
+  .done .req-id {
+    display: inline-block; margin-top: 14px;
+    background: #fff; border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 14px; font-weight: 600; letter-spacing: 0.03em;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="form-view">
+    <header>
+      <h1>ขอซื้อของ</h1>
+      <p>กรอกสั้น ๆ จัดซื้อรับเรื่องต่อให้ทันที และจะแจ้งสถานะกลับทางไลน์</p>
+    </header>
+
+    <div class="hello" id="hello">
+      <img id="avatar" alt="" src="">
+      <span>สวัสดี <b id="disp-name"></b> — คำขอนี้จะบันทึกในชื่อคุณ</span>
+    </div>
+
+    <button class="login-btn" id="login-btn" onclick="doLogin()">เข้าสู่ระบบด้วย LINE เพื่อรับแจ้งเตือน</button>
+
+    <div class="notice warn" id="warn-box"></div>
+    <div class="notice err" id="err-box"></div>
+
+    <div class="card">
+      <div id="manual-name-wrap">
+        <label for="manual-name">ชื่อผู้ขอ</label>
+        <input id="manual-name" placeholder="ชื่อ-แผนก เช่น สมชาย ช่างไซต์ A">
+        <p class="hint">กรอกชื่อเองเพราะยังไม่ได้เข้าสู่ระบบ LINE — คำขอนี้จะไม่ได้รับแจ้งเตือนอัตโนมัติ</p>
+      </div>
+
+      <label for="item">อยากได้อะไร</label>
+      <textarea id="item" placeholder="เช่น ส้มสายน้ำผึ้ง / มือจับประตู HAFELE 489.11.046 สีเทา"></textarea>
+      <p class="hint">ใส่รุ่น สี ขนาด ให้ละเอียดพอที่จัดซื้อสั่งได้ถูกตัว</p>
+
+      <div class="row">
+        <div>
+          <label for="qty">จำนวน</label>
+          <input id="qty" type="number" inputmode="decimal" min="0.01" step="any" placeholder="2">
+        </div>
+        <div>
+          <label for="unit">หน่วย</label>
+          <input id="unit" placeholder="ลูก / ชุด / กล่อง">
+        </div>
+      </div>
+
+      <label for="needBy">ต้องการใช้ภายใน <span class="opt">(ถ้ามี)</span></label>
+      <input id="needBy" type="date">
+
+      <label for="project">ใช้กับโปรเจกต์ / บ้านหลังไหน <span class="opt">(ถ้ามี)</span></label>
+      <input id="project" placeholder="เช่น บ้านคุณเซิม / A1">
+
+      <label for="note">หมายเหตุ <span class="opt">(ถ้ามี)</span></label>
+      <input id="note" placeholder="เช่น ของด่วน ใช้พรุ่งนี้">
+
+      <button class="submit" id="submit-btn" onclick="submitForm()">ส่งคำขอ</button>
+      <p class="error" id="err"></p>
+    </div>
+  </div>
+
+  <div class="done" id="done-view">
+    <div class="check">&#10003;</div>
+    <h2>ส่งคำขอเรียบร้อย</h2>
+    <p id="done-msg">จัดซื้อรับเรื่องแล้ว เดี๋ยวระบบจะแจ้งสถานะ<br>กลับมาทางไลน์อัตโนมัติ</p>
+    <span class="req-id" id="req-id"></span>
+  </div>
+
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  // ============ ตั้งค่า 2 บรรทัดนี้ ============
+  var LIFF_ID = '2010661050-IAMDZu3r';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhjRInxxS9LMyV75-r1kvakF1o7Bw2LfYn0aEqjMZwiNFXXf2iDq1acRkPKOIKDuug/exec'; // วาง Web app URL (ลงท้าย /exec) ของคุณแทนข้อความนี้ทั้งก้อน โดยคงเครื่องหมาย ' ' หัวท้ายไว้
+  // ==========================================
+
+  var profile = { userId: '', displayName: '' };
+  var liffReady = false;
+
+  function show(id, on) { document.getElementById(id).style.display = on ? (id === 'hello' ? 'flex' : 'block') : 'none'; }
+  function setText(id, t) { document.getElementById(id).textContent = t; }
+
+  (function init() {
+    if (typeof liff === 'undefined') {
+      showManualMode('โหลดตัวเชื่อม LINE ไม่สำเร็จ (อินเทอร์เน็ตอาจถูกบล็อก)');
+      return;
+    }
+    liff.init({ liffId: LIFF_ID })
+      .then(function () {
+        liffReady = true;
+        if (liff.isLoggedIn()) {
+          return liff.getProfile().then(function (p) {
+            profile.userId = p.userId;
+            profile.displayName = p.displayName;
+            setText('disp-name', p.displayName);
+            if (p.pictureUrl) document.getElementById('avatar').src = p.pictureUrl;
+            show('hello', true);
+          });
+        } else {
+          // เปิดจากเบราว์เซอร์ (คอม) — โชว์ปุ่ม login แต่ยังกรอกต่อได้ถ้าไม่อยาก login
+          show('login-btn', true);
+          showManualFields();
+        }
+      })
+      .catch(function (e) {
+        showManualMode('เชื่อม LINE ไม่สำเร็จ: ' + (e && e.message ? e.message : e));
+      });
+  })();
+
+  function doLogin() {
+    if (liffReady) liff.login({ redirectUri: window.location.href });
+  }
+
+  function showManualFields() {
+    document.getElementById('manual-name-wrap').style.display = 'block';
+  }
+
+  function showManualMode(reason) {
+    var w = document.getElementById('warn-box');
+    w.textContent = 'โหมดกรอกชื่อเอง — ' + reason;
+    show('warn-box', true);
+    showManualFields();
+  }
+
+  function submitForm() {
+    var item = document.getElementById('item').value.trim();
+    var qty = document.getElementById('qty').value;
+    var manualName = document.getElementById('manual-name').value.trim();
+    var err = document.getElementById('err');
+    err.style.display = 'none';
+
+    if (!item) { return showErr('บอกหน่อยว่าอยากได้อะไร'); }
+    if (!qty || Number(qty) <= 0) { return showErr('ใส่จำนวนมากกว่า 0'); }
+    if (!profile.userId && !manualName) { return showErr('กรอกชื่อผู้ขอ หรือกดเข้าสู่ระบบด้วย LINE ก่อนนะ'); }
+    if (SCRIPT_URL.indexOf('http') !== 0) { return showErr('ยังไม่ได้ตั้งค่า SCRIPT_URL ในไฟล์ฟอร์ม'); }
+
+    var btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'กำลังส่ง…';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        userId: profile.userId,
+        displayName: profile.displayName || manualName,
+        item: item,
+        qty: qty,
+        unit: document.getElementById('unit').value,
+        needBy: document.getElementById('needBy').value,
+        project: document.getElementById('project').value,
+        note: document.getElementById('note').value
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.error || 'ส่งไม่สำเร็จ');
+        document.getElementById('form-view').style.display = 'none';
+        if (!profile.userId) {
+          setText('done-msg', 'จัดซื้อรับเรื่องแล้ว — คำขอนี้กรอกชื่อเอง จึงไม่มีแจ้งเตือนไลน์ ติดตามสถานะกับจัดซื้อได้โดยตรง');
+        }
+        setText('req-id', res.reqId || '');
+        show('done-view', true);
+        setTimeout(function () {
+          if (liffReady && liff.isInClient && liff.isInClient()) liff.closeWindow();
+        }, 2500);
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        btn.textContent = 'ส่งคำขอ';
+        showErr(e && e.message ? e.message : 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');
+      });
+  }
+
+  function showErr(msg) {
+    var err = document.getElementById('err');
+    err.textContent = msg;
+    err.style.display = 'block';
+  }
+</script>
+</body>
+</html>
