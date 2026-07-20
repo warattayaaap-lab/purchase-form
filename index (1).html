@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ขอซื้อของ</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --ink:#1a2b26; --muted:#64756f; --line:#dde5e1; --accent:#0f6e56; --accent-soft:#e1f5ee;
+    --bg:#f5f7f6; --danger:#a32d2d; --danger-soft:#fcebeb; }
+  *{box-sizing:border-box;margin:0;}
+  body{font-family:'Noto Sans Thai',sans-serif;background:var(--bg);color:var(--ink);font-size:16px;line-height:1.6;}
+  .wrap{max-width:480px;margin:0 auto;padding:20px 16px 40px;}
+  header h1{font-size:22px;font-weight:600;}
+  header p{font-size:14px;color:var(--muted);margin-bottom:18px;}
+  .hello{display:none;align-items:center;gap:10px;background:var(--accent-soft);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:14px;color:#085041;}
+  .hello img{width:32px;height:32px;border-radius:50%;}
+  .notice{display:none;border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:14px;background:var(--danger-soft);color:var(--danger);word-break:break-word;}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 16px;}
+  label{display:block;font-size:14px;font-weight:500;margin:14px 0 6px;}
+  label:first-child{margin-top:0;}
+  label .opt{color:var(--muted);font-weight:400;}
+  input,textarea{width:100%;font:inherit;color:inherit;border:1px solid var(--line);border-radius:10px;padding:10px 11px;background:#fff;}
+  input:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft);}
+  .item-row{display:flex;gap:6px;margin-bottom:8px;align-items:flex-start;}
+  .item-row textarea{flex:1;min-height:44px;resize:vertical;}
+  .item-row .qty{width:60px;padding:10px 8px;text-align:right;}
+  .item-row .unit{width:66px;padding:10px 8px;}
+  .item-row .del{background:none;border:none;color:var(--muted);font-size:20px;padding:8px 2px 0;cursor:pointer;line-height:1;}
+  .add-row{background:none;border:1px dashed var(--line);border-radius:10px;width:100%;padding:10px;font:inherit;font-size:14px;color:var(--accent);cursor:pointer;}
+  details{margin-top:10px;border:1px solid var(--line);border-radius:10px;padding:9px 12px;}
+  details summary{font-size:14px;color:var(--accent);cursor:pointer;font-weight:500;}
+  details textarea{margin-top:8px;min-height:100px;font-size:14px;}
+  .parse-btn{margin-top:8px;background:var(--accent-soft);color:#085041;border:none;border-radius:8px;padding:9px 14px;font:inherit;font-size:14px;font-weight:500;cursor:pointer;}
+  .hint{font-size:13px;color:var(--muted);margin-top:4px;}
+  .photo-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:none;border:1px dashed var(--line);border-radius:10px;padding:12px;font:inherit;font-size:14px;color:var(--muted);cursor:pointer;}
+  #photo-preview{display:none;position:relative;margin-top:10px;}
+  #photo-preview img{width:100%;border-radius:10px;border:1px solid var(--line);}
+  #photo-remove{position:absolute;top:8px;right:8px;background:rgba(0,0,0,0.6);color:#fff;border:none;border-radius:8px;padding:4px 10px;font:inherit;font-size:13px;cursor:pointer;}
+  button.submit{width:100%;margin-top:22px;background:var(--accent);color:#fff;border:none;border-radius:12px;padding:14px;font:inherit;font-size:17px;font-weight:600;cursor:pointer;}
+  button.submit:disabled{opacity:.55;}
+  .error{color:var(--danger);font-size:14px;margin-top:12px;display:none;}
+  .done{text-align:center;padding:48px 16px;display:none;}
+  .done .check{width:64px;height:64px;border-radius:50%;background:var(--accent-soft);color:var(--accent);display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto 16px;}
+  .done h2{font-size:20px;font-weight:600;margin-bottom:6px;}
+  .done p{color:var(--muted);font-size:15px;}
+  .done .req-id{display:inline-block;margin-top:14px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 14px;font-weight:600;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div id="form-view">
+    <header>
+      <h1>ขอซื้อของ</h1>
+      <p>ส่งแล้วจัดซื้อรับเรื่องทันที และจะแจ้งสถานะกลับในกลุ่มไลน์</p>
+    </header>
+
+    <div class="hello" id="hello">
+      <img id="avatar" alt="" src="">
+      <span>สวัสดี <b id="disp-name"></b> — คำขอนี้จะบันทึกในชื่อคุณ</span>
+    </div>
+    <div class="notice" id="err-box"></div>
+
+    <div class="card">
+      <label>อยากได้อะไรบ้าง</label>
+      <div id="items"></div>
+      <button type="button" class="add-row" onclick="addRow()">+ เพิ่มบรรทัด</button>
+
+      <details>
+        <summary>พิมพ์รายการไว้แล้ว? วางทั้งชุดตรงนี้</summary>
+        <textarea id="paste-box" placeholder="บรรทัดละ 1 รายการ เช่น&#10;ปูนก่อเสือซุปเปอร์ 50 ถุง&#10;เหล็ก RB6 20 เส้น"></textarea>
+        <button type="button" class="parse-btn" onclick="parsePaste()">แปลงเป็นรายการ</button>
+      </details>
+
+      <label style="margin-top:18px;">รูปโพย / รายการ <span class="opt">(ถ้ามี)</span></label>
+      <input type="file" id="photo-input" accept="image/*" style="display:none;" onchange="photoPicked(this)">
+      <button type="button" class="photo-btn" onclick="document.getElementById('photo-input').click()">&#128247; ถ่ายรูปหรือแนบรูป</button>
+      <div id="photo-preview">
+        <img id="photo-img" alt="รูปที่แนบ">
+        <button type="button" id="photo-remove" onclick="removePhoto()">ลบรูป</button>
+      </div>
+
+      <label for="project">ใช้กับบ้าน / โปรเจกต์ไหน</label>
+      <input id="project" placeholder="เช่น บ้านเฌอ / ขิม">
+
+      <label for="purpose">ใช้ทำอะไร</label>
+      <input id="purpose" placeholder="เช่น งานก่อฉาบชั้น 2">
+
+      <label for="note">หมายเหตุ <span class="opt">(ถ้ามี)</span></label>
+      <input id="note" placeholder="เช่น ของด่วน ใช้พรุ่งนี้เช้า">
+
+      <button class="submit" id="submit-btn" onclick="submitForm()">ส่งคำขอ</button>
+      <p class="error" id="err"></p>
+    </div>
+  </div>
+
+  <div class="done" id="done-view">
+    <div class="check">&#10003;</div>
+    <h2>ส่งคำขอเรียบร้อย</h2>
+    <p>จัดซื้อรับเรื่องแล้ว พอสั่งของเมื่อไหร่<br>จะแจ้งกลับในกลุ่มไลน์นะ</p>
+    <span class="req-id" id="req-id"></span>
+  </div>
+
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script>
+  // ============ ตั้งค่า (แก้บรรทัด SCRIPT_URL บรรทัดเดียว) ============
+  var LIFF_ID = '2010661050-IAMDZu3r';
+  var SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwRLOYzrcR7vx9s1PrT4D9Iw1qhedlkqouIgzIJbO1NVlPahMBWDQ5pFWR9jbkXaHHu/exec';
+  // ================================================================
+
+  var profile = { userId: '', displayName: '' };
+  var photoData = null;
+
+  function addRow(name, qty, unit) {
+    var div = document.createElement('div');
+    div.className = 'item-row';
+    div.innerHTML =
+      '<textarea rows="1" class="name" placeholder="เช่น ปูนก่อเสือซุปเปอร์"></textarea>' +
+      '<input class="qty" type="number" inputmode="decimal" min="0.01" step="any" placeholder="50">' +
+      '<input class="unit" placeholder="ถุง">' +
+      '<button type="button" class="del" onclick="this.parentNode.remove()" aria-label="ลบบรรทัดนี้">&times;</button>';
+    document.getElementById('items').appendChild(div);
+    if (name) div.querySelector('.name').value = name;
+    if (qty) div.querySelector('.qty').value = qty;
+    if (unit) div.querySelector('.unit').value = unit;
+  }
+  addRow();
+
+  function parsePaste() {
+    var lines = document.getElementById('paste-box').value.split(/\n+/).map(function (l) { return l.trim(); }).filter(Boolean);
+    if (!lines.length) return;
+    document.querySelectorAll('#items .item-row').forEach(function (r) {
+      if (!r.querySelector('.name').value.trim()) r.remove();
+    });
+    lines.forEach(function (line) {
+      var m = line.match(/^(.*?)[\s.\u00b7-]*([0-9]+(?:[.,][0-9]+)?)\s*([^\s0-9]{1,10})?\s*$/);
+      if (m && m[1].trim()) addRow(m[1].trim(), m[2].replace(',', '.'), m[3] || '');
+      else addRow(line, '', '');
+    });
+    document.getElementById('paste-box').value = '';
+  }
+
+  function photoPicked(input) {
+    var file = input.files && input.files[0];
+    if (!file) return;
+    var img = new Image();
+    var reader = new FileReader();
+    reader.onload = function (e) { img.src = e.target.result; };
+    img.onload = function () {
+      var MAX = 1280;
+      var scale = Math.min(1, MAX / Math.max(img.width, img.height));
+      var canvas = document.createElement('canvas');
+      canvas.width = Math.round(img.width * scale);
+      canvas.height = Math.round(img.height * scale);
+      canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+      var dataUrl = canvas.toDataURL('image/jpeg', 0.8);
+      photoData = { base64: dataUrl.split(',')[1], type: 'image/jpeg' };
+      document.getElementById('photo-img').src = dataUrl;
+      document.getElementById('photo-preview').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+  function removePhoto() {
+    photoData = null;
+    document.getElementById('photo-preview').style.display = 'none';
+  }
+
+  (function init() {
+    if (typeof liff === 'undefined') return showBox('โหลดตัวเชื่อม LINE ไม่สำเร็จ');
+    liff.init({ liffId: LIFF_ID }).then(function () {
+      if (!liff.isLoggedIn()) { liff.login({ redirectUri: window.location.href }); return; }
+      return liff.getProfile();
+    }).then(function (p) {
+      if (!p) return;
+      profile.userId = p.userId;
+      profile.displayName = p.displayName;
+      document.getElementById('disp-name').textContent = p.displayName;
+      if (p.pictureUrl) document.getElementById('avatar').src = p.pictureUrl;
+      document.getElementById('hello').style.display = 'flex';
+    }).catch(function (e) { showBox('เชื่อม LINE ไม่สำเร็จ: ' + (e && e.message ? e.message : e)); });
+  })();
+
+  function showBox(msg) {
+    var b = document.getElementById('err-box');
+    b.textContent = msg;
+    b.style.display = 'block';
+  }
+
+  function getItems() {
+    var items = [];
+    document.querySelectorAll('#items .item-row').forEach(function (r) {
+      var name = r.querySelector('.name').value.trim();
+      if (name) items.push({ name: name, qty: r.querySelector('.qty').value, unit: r.querySelector('.unit').value.trim() });
+    });
+    return items;
+  }
+
+  function submitForm() {
+    var items = getItems();
+    var err = document.getElementById('err');
+    err.style.display = 'none';
+    if (!items.length && !photoData) return showErr('ใส่อย่างน้อย 1 รายการ หรือแนบรูปมาก็ได้');
+    if (SCRIPT_URL.indexOf('http') !== 0) return showErr('ฟอร์มยังไม่ได้ตั้งค่า SCRIPT_URL');
+
+    var btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'กำลังส่ง…';
+
+    fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        formSubmit: true,
+        userId: profile.userId,
+        displayName: profile.displayName,
+        items: items,
+        project: document.getElementById('project').value,
+        purpose: document.getElementById('purpose').value,
+        note: document.getElementById('note').value,
+        imageBase64: photoData ? photoData.base64 : '',
+        imageType: photoData ? photoData.type : ''
+      })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (res) {
+        if (!res.ok) throw new Error(res.error || 'ส่งไม่สำเร็จ');
+        document.getElementById('form-view').style.display = 'none';
+        document.getElementById('req-id').textContent = res.jobId || '';
+        document.getElementById('done-view').style.display = 'block';
+        setTimeout(function () {
+          if (typeof liff !== 'undefined' && liff.isInClient && liff.isInClient()) liff.closeWindow();
+        }, 2500);
+      })
+      .catch(function (e) {
+        btn.disabled = false;
+        btn.textContent = 'ส่งคำขอ';
+        showErr(e && e.message ? e.message : 'ส่งไม่สำเร็จ ลองใหม่อีกครั้ง');
+      });
+  }
+
+  function showErr(msg) {
+    var err = document.getElementById('err');
+    err.textContent = msg;
+    err.style.display = 'block';
+  }
+</script>
+</body>
+</html>
